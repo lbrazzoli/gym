@@ -91,9 +91,9 @@
     .badge{ display:inline-block; font-size: 11px; padding: 3px 8px; border-radius: 999px; border: 1px solid var(--separator); color: var(--secondary) }
 
     /* Evidenzia righe da ripetere (bordo sinistro + leggero tint) */
-    .row.repeat{ background: var(--tint-soft) }
-    .row.repeat::before{ content: ""; width: 4px; background: var(--tint); border-radius: 2px; margin-right: 12px; grid-column: 1 / 3 }
-    .row.repeat{ grid-template-columns: 4px 1fr auto; column-gap: 12px; padding-left: 12px }
+    .row.repeat{ background: var(--tint-soft); color: var(--label); padding-left: 16px; display: flex; justify-content: space-between; align-items: center; }
+    .row.repeat::before{ content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--tint); border-radius: 0 2px 2px 0 }
+    .row.repeat{ background: var(--tint-soft); color: var(--label); padding-left: 16px; display: flex; justify-content: space-between; align-items: center; }
 
     /* Esercizi "Grandi": sottolinea il nome (titolo) */
     .row.grande .title{ text-decoration: underline; text-decoration-color: var(--tint); text-decoration-thickness: 2px; text-underline-offset: 3px }
@@ -108,6 +108,17 @@
       .nav-title{ font-size: 32px }
       .row{ padding: 16px 18px }
     }
+  
+    /* ===== Overrides for readability & layout (iOS minimal) ===== */
+    .row{ position: relative; align-items: center }
+    .row.repeat{ background: var(--tint-soft); color: var(--label); padding-left: 16px; display: flex; justify-content: space-between; align-items: center; }
+    .row.repeat::before{ content: ""; position: absolute; left: 12px; top: 8px; bottom: 8px; width: 3px; background: var(--tint); border-radius: 2px }
+    .row.repeat .meta{ color: var(--label) }
+  
+    /* ===== Critical fix: ensure repeat rows keep TWO columns (1fr | auto) ===== */
+    .row .meta{ justify-self:end; text-align:right; white-space:normal }
+    .row.repeat{ grid-template-columns: 1fr auto !important; column-gap: 8px !important; padding-left:28px; background: var(--tint-soft); color: var(--label); position:relative }
+    .row.repeat::before{ content:""; position:absolute; left:12px; top:10px; bottom:10px; width:3px; background:var(--tint); border-radius:2px }
   </style>
 </head>
 <body>
