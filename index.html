@@ -2,382 +2,322 @@
 <html lang="it">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Shape Up</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="light dark" />
+  <title>Shape Up</title>
   <style>
-    /* =========================
-       Shape Up — palette aggiornata (blu scuro, azzurro, bianco, arancio, ruggine)
-       ========================= */
+    /* ==========================================
+       Shape Up — iOS minimal (mobile‑first)
+       ========================================== */
     :root{
-      /* Base (dark fallback) */
-      --bg:#0e0e12; --bg-soft:#14141b; --card:#111117; --surface:#15151e;
-      --text:#ececf1; --muted:#9b9ba6; --line:#272733;
-      --primary:#1F6380;   /* blu scuro */
-      --primary-soft:#73BFD8; /* azzurro */
-      --accent:#FF6A2D;    /* arancio */
-      --rust:#9A4B2E;      /* ruggine */
+      /* iOS light */
+      --bg:        #F2F2F7; /* system grouped background */
+      --card:      #FFFFFF; /* secondary background */
+      --label:     #1C1C1E; /* primary label */
+      --secondary: #8E8E93; /* secondary label */
+      --tertiary:  #AEAEB2; /* tertiary label */
+      --quatern:   #C7C7CC; /* quaternary */
+      --separator: #C6C6C8; /* separator */
+      --tint:      #0A84FF; /* iOS blue */
+      --tint-soft: #E5F0FF; /* blue tint background */
+      --accent:    #FF9F0A; /* iOS orange */
+      --stretch:   #34C759; /* iOS green */
 
-      /* Highlights */
-      --repeat-row-bg: rgba(115,191,216,.24); /* per le righe da ripetere */
-      --repeat-row-bd: rgba(31,99,128,.35);
-      --hover-row-bg: rgba(255,106,45,.14);   /* hover diverso dall'highlight repeat */
-
-      /* Circuit headers */
-      --circuit-bg: rgba(154,75,46,.12);
-      --circuit-bd: rgba(154,75,46,.36);
-
-      /* Tag / chips */
-      --grande-bg: rgba(31,99,128,.10);
-      --grande-bd: rgba(31,99,128,.30);
-
-      --radius-lg:16px; --radius-md:12px; --radius-sm:10px;
-      --shadow-1:0 10px 30px rgba(0,0,0,.28), 0 2px 8px rgba(0,0,0,.22);
-      --shadow-2:0 4px 16px rgba(0,0,0,.24);
+      --radius: 14px;
+      --radius-sm: 10px;
+      --shadow: 0 1px 2px rgba(0,0,0,.06), 0 6px 18px rgba(0,0,0,.06);
     }
-    @media (prefers-color-scheme: light){
+
+    @media (prefers-color-scheme: dark){
       :root{
-        --bg:#ffffff; --bg-soft:#f7f7fa; --card:#ffffff; --surface:#fbfbfe;
-        --text:#1a1a1e; --muted:#6b6b77; --line:#e6e6ea;
-        --primary:#1F6380; --primary-soft:#73BFD8; --accent:#FF6A2D; --rust:#9A4B2E;
-        --repeat-row-bg: rgba(115,191,216,.24);
-        --repeat-row-bd: rgba(31,99,128,.35);
-        --hover-row-bg: rgba(255,106,45,.10);
-        --circuit-bg: rgba(154,75,46,.10);
-        --circuit-bd: rgba(154,75,46,.32);
-        --grande-bg: rgba(31,99,128,.08);
-        --grande-bd: rgba(31,99,128,.28);
+        --bg:        #000000; /* system black */
+        --card:      #1C1C1E; /* secondary grouped background */
+        --label:     #F2F2F7;
+        --secondary: #EBEBF5A8; /* iOS secondary on dark */
+        --tertiary:  #EBEBF566;
+        --quatern:   #3A3A3C;
+        --separator: #2C2C2E;
+        --tint:      #0A84FF;
+        --tint-soft: #0A84FF1a; /* translucent */
+        --accent:    #FF9F0A;
+        --stretch:   #30D158;
+        --shadow:    none;
       }
     }
 
-    *{box-sizing:border-box}
-    html,body{height:100%}
+    *, *::before, *::after{ box-sizing: border-box }
+    html, body{ height: 100% }
     body{
-      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; color:var(--text);
-      background:
-        radial-gradient(1100px 520px at 85% -10%, rgba(255,106,45,.10), transparent 60%),
-        radial-gradient(900px 500px at -10% 20%, rgba(31,99,128,.10), transparent 55%),
-        linear-gradient(180deg, var(--bg) 0%, var(--bg-soft) 100%);
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+      background: var(--bg);
+      color: var(--label);
     }
-    .wrap{max-width:980px;margin:0 auto;padding:20px}
 
-    /* Header */
-    header.site{position:sticky;top:0;z-index:10;backdrop-filter:blur(8px);
-      background:linear-gradient(180deg,rgba(255,255,255,.65),rgba(255,255,255,.25));
-      border-bottom:1px solid var(--line)}
-    .site-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0}
-    .brand{display:flex;align-items:center;gap:10px}
-    .brand h1{font-size:22px;font-weight:800;letter-spacing:.2px;margin:0}
-    .brand .badge{font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;color:var(--primary);
-      background:rgba(31,99,128,.10);border:1px solid rgba(31,99,128,.30)}
-    .subtitle{margin:0;color:var(--muted);font-size:12px}
+    .safe{ padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
 
-    /* Card */
-    section.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-lg);padding:14px 14px 18px;margin:16px 0;box-shadow:var(--shadow-1)}
-    h2.title{font-size:16px;display:flex;align-items:center;gap:10px;margin:6px 4px 12px}
-    .tag{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;font-weight:700;font-size:12px}
-    .tag-grande{background:var(--grande-bg);border:1px solid var(--grande-bd);color:var(--primary)}
-    .tag-repeat{background:var(--repeat-row-bg);border:1px solid var(--repeat-row-bd);color:var(--primary)}
-
-    /* Table */
-    .table-wrap{border:1px solid var(--line);border-radius:var(--radius-md);overflow:hidden;background:var(--surface)}
-    table{width:100%;border-collapse:separate;border-spacing:0}
-    thead th{text-align:left;font-size:12.5px;letter-spacing:.015em;color:var(--muted);padding:12px;background:linear-gradient(180deg,#f8f7fb,transparent);border-bottom:1px solid var(--line)}
-    tbody td{padding:12px;font-size:14px;border-bottom:1px solid var(--line);vertical-align:top}
-    tbody tr:nth-child(odd) td{background:#fff}
-    /* HOVER: arancio tenue — diverso dal blu delle righe repeat */
-    
-
-    /* Grandi: underline blu */
-    tbody tr.grande td{ background: transparent }
-    tbody tr.grande td:nth-child(2){ text-decoration: underline; text-decoration-color: var(--primary); text-underline-offset: 3px; text-decoration-thickness: 2px }
-
-    /* Repeat 2x: highlight azzurro */
-    .repeat-badge{ display:none }
-    tbody tr.repeat td{ background: var(--repeat-row-bg); border-bottom:1px solid var(--repeat-row-bd) }
-    
-
-    /* Circuit groups (header ruggine + rail arancio) */
-    .circuit-row td{ background: var(--circuit-bg) !important; color: var(--rust); font-weight:900; border-top:2px solid var(--circuit-bd); border-bottom:2px solid var(--circuit-bd); text-align:center; letter-spacing:.06em; text-transform:uppercase }
-    tbody.block[data-circuit] tr + tr td{ box-shadow: inset 6px 0 0 var(--accent) }
-    tbody.block[data-circuit] tr:nth-child(2) td:first-child{ border-top-left-radius: var(--radius-md) }
-    tbody.block[data-circuit] tr:nth-child(2) td:last-child{ border-top-right-radius: var(--radius-md) }
-    tbody.block[data-circuit] tr:last-child td:first-child{ border-bottom-left-radius: var(--radius-md) }
-    tbody.block[data-circuit] tr:last-child td:last-child{ border-bottom-right-radius: var(--radius-md) }
-
-    /* Legend */
-    .legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
-    .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:#f3f5f8;color:var(--muted);border:1px solid var(--line);font-size:12px}
-    .chip em{font-style:normal;color:var(--text);font-weight:600}
-
-    /* Stretching images */
-    .stretch-img{width:100%;max-width:320px;height:auto;border:1px solid var(--line);border-radius:12px}
-
-    /* Mobile cards */
-    @media(max-width:760px){
-      thead{display:none}
-      tbody,table,tr,td{display:block;width:100%}
-      tbody tr{margin:12px 10px 16px;border:1px solid var(--line);border-radius:var(--radius-md);box-shadow:var(--shadow-2);overflow:hidden;background:#fff}
-      tbody td{border:0;padding:10px 12px;position:relative}
-      tbody td+td{border-top:1px dashed var(--line)}
-      tbody td::before{content:attr(data-label);display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
-      .circuit-row td{border-radius:999px}
+    /* NavBar stile iOS */
+    .navbar{
+      position: sticky; top: 0; z-index: 10;
+      background: var(--bg);
+      padding-top: calc(8px + env(safe-area-inset-top));
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--separator);
     }
+    .nav-title{ font-size: 28px; font-weight: 700; letter-spacing: .2px; margin: 2px 0 0 }
+    .nav-sub{ color: var(--secondary); font-size: 13px; margin: 4px 0 0 }
+
+    /* Segmented control */
+    .seg{
+      display: inline-flex; gap: 2px; background: color-mix(in oklab, var(--card) 60%, var(--bg));
+      border: 1px solid var(--separator); border-radius: 999px; padding: 2px; margin-top: 12px;
+    }
+    .seg button{
+      appearance: none; border: 0; background: transparent; color: var(--label);
+      font-size: 13px; padding: 8px 12px; border-radius: 999px; cursor: pointer
+    }
+    .seg button[aria-pressed="true"]{ background: var(--card); box-shadow: var(--shadow) }
+
+    /* Cards raggruppate (stile iOS Settings / Health) */
+    .section{ margin: 18px 0 }
+    .section-header{ font-size: 12px; color: var(--secondary); letter-spacing: .06em; text-transform: uppercase; margin: 10px 0 8px; padding-left: 8px }
+
+    .group{ background: var(--card); border: 1px solid var(--separator); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden }
+    .row{ display: grid; grid-template-columns: 1fr auto; gap: 8px; padding: 14px 16px; border-top: 1px solid var(--separator) }
+    .row:first-child{ border-top: 0 }
+    .title{ font-weight: 600; }
+    .meta{ color: var(--secondary); font-size: 13px }
+    .badge{ display:inline-block; font-size: 11px; padding: 3px 8px; border-radius: 999px; border: 1px solid var(--separator); color: var(--secondary) }
+
+    /* Evidenzia righe da ripetere (bordo sinistro + leggero tint) */
+    .row.repeat{ background: var(--tint-soft) }
+    .row.repeat::before{ content: ""; width: 4px; background: var(--tint); border-radius: 2px; margin-right: 12px; grid-column: 1 / 3 }
+    .row.repeat{ grid-template-columns: 4px 1fr auto; column-gap: 12px; padding-left: 12px }
+
+    /* Esercizi "Grandi": sottolinea il nome (titolo) */
+    .row.grande .title{ text-decoration: underline; text-decoration-color: var(--tint); text-decoration-thickness: 2px; text-underline-offset: 3px }
 
     /* Footer */
-    .footer{color:var(--muted);font-size:12px;text-align:center;padding:16px 0 24px}
-    .footer a{color:inherit}
+    .footer{ color: var(--secondary); font-size: 12px; text-align: center; padding: 18px 0 28px }
+    .footer a{ color: inherit }
 
-    /* Print */
-    @media print{
-      header.site{position:static;backdrop-filter:none;border:0}
-      body{background:#fff;color:#111}
-      .wrap{max-width:100%;padding:0}
-      .footer{display:none}
-      .brand .badge{border-color:#000}
+    /* Desktop small tweaks */
+    @media (min-width: 820px){
+      .container{ max-width: 860px; margin: 0 auto }
+      .nav-title{ font-size: 32px }
+      .row{ padding: 16px 18px }
     }
   </style>
 </head>
 <body>
-  <header class="site">
-    <div class="wrap site-inner">
-      <div class="brand">
-        <div style="font-size:20px">🏋️‍♂️</div>
-        <h1>Shape Up</h1>
-        <span class="badge">UI Refresh</span>
+  <header class="navbar safe">
+    <div class="container">
+      <h1 class="nav-title">Shape Up</h1>
+      <p class="nav-sub">Aggiornamento • Tue Sep 16 2025</p>
+      <div class="seg" role="tablist" aria-label="Filtra contenuti">
+        <button id="tab-all" role="tab" aria-pressed="true">Tutto</button>
+        <button id="tab-repeat" role="tab" aria-pressed="false">Solo ripetizioni</button>
+        <button id="tab-stretch" role="tab" aria-pressed="false">Stretching</button>
       </div>
-      <p class="subtitle">Aggiornamento • Tue Sep 16 2025</p>
     </div>
   </header>
 
-  <main class="wrap">
-    <section class="card">
-      <h2 class="title">
-        <span class="tag tag-repeat">2° giro: ripeti solo questi</span>
-      </h2>
+  <main class="safe">
+    <div class="container">
+      <!-- Warmup -->
+      <section class="section" data-group="R">
+        <h2 class="section-header">Riscaldamento</h2>
+        <div class="group">
+          <div class="row" data-repeat="false">
+            <div class="title">Bicicletta</div>
+            <div class="meta">3 min · —</div>
+          </div>
+        </div>
+      </section>
 
-      <div class="table-wrap">
-        <table class="workout">
-          <thead>
-            <tr>
-              <th>Circuito</th>
-              <th>Esercizio</th>
-              <th>Ripetizioni previste</th>
-              <th>Carico previsto</th>
-            </tr>
-          </thead>
+      <!-- Circuito I -->
+      <section class="section" data-group="I">
+        <h2 class="section-header">Circuito I</h2>
+        <div class="group">
+          <div class="row grande repeat" data-repeat="true">
+            <div class="title">Chest Press</div>
+            <div class="meta">12 rip · 40 kg</div>
+          </div>
+          <div class="row grande repeat" data-repeat="true">
+            <div class="title">Lat Machine</div>
+            <div class="meta">12 rip · 35 kg</div>
+          </div>
+          <div class="row grande repeat" data-repeat="true">
+            <div class="title">Leg Press</div>
+            <div class="meta">12 rip · 90 kg</div>
+          </div>
+          <div class="row grande repeat" data-repeat="true">
+            <div class="title">Shoulder Press</div>
+            <div class="meta">12 rip · 25 kg</div>
+          </div>
+          <div class="row grande repeat" data-repeat="true">
+            <div class="title">Vertical Traction</div>
+            <div class="meta">12 rip · 45 kg</div>
+          </div>
+          <div class="row repeat" data-repeat="true">
+            <div class="title">Leg Extension</div>
+            <div class="meta">15 SX / 10 DX · 25 Kg SX / 30 Kg DX</div>
+          </div>
+          <div class="row repeat" data-repeat="true">
+            <div class="title">Leg Curl</div>
+            <div class="meta">15 SX / 10 DX · 20 Kg SX / 25 Kg DX</div>
+          </div>
+          <div class="row grande repeat" data-repeat="true">
+            <div class="title">Pulley</div>
+            <div class="meta">12 rip · 25 kg</div>
+          </div>
+        </div>
+      </section>
 
-          <!-- Warmup block -->
-          <tbody class="block" data-circuit="R">
-            <tr class="circuit-row"><td colspan="4"><span class="c-title">Riscaldamento</span></td></tr>
-            <tr>
-              <td data-label='Circuito'>Riscaldamento</td>
-              <td data-label='Esercizio'>Bicicletta</td>
-              <td data-label='Ripetizioni previste'>3 min</td>
-              <td data-label='Carico previsto'>-</td>
-            </tr>
-          </tbody>
+      <!-- Circuito II -->
+      <section class="section" data-group="II">
+        <h2 class="section-header">Circuito II</h2>
+        <div class="group">
+          <div class="row" data-repeat="false">
+            <div class="title">Arnold Press manubri</div>
+            <div class="meta">12 rip · 6 kg</div>
+          </div>
+          <div class="row" data-repeat="false">
+            <div class="title">TRX Row</div>
+            <div class="meta">10 rip · corpo libero</div>
+          </div>
+          <div class="row grande repeat" data-repeat="true">
+            <div class="title">Affondi camminati</div>
+            <div class="meta">10 SX / 10 DX · corpo libero</div>
+          </div>
+          <div class="row" data-repeat="false">
+            <div class="title">Dip su panchette</div>
+            <div class="meta">10 rip · corpo libero</div>
+          </div>
+          <div class="row repeat" data-repeat="true">
+            <div class="title">Curl bicipiti manubri</div>
+            <div class="meta">10 rip · 8 kg</div>
+          </div>
+          <div class="row grande repeat" data-repeat="true">
+            <div class="title">Hip Thrust</div>
+            <div class="meta">10 rip · 20 kg</div>
+          </div>
+        </div>
+      </section>
 
-          <!-- Circuito I -->
-          <tbody class="block" data-circuit="I">
-            <tr class="circuit-row"><td colspan="4"><span class="c-title">Circuito I</span></td></tr>
-            <tr class="grande repeat">
-              <td data-label='Circuito'>1</td>
-              <td data-label='Esercizio'>Chest Press </td>
-              <td data-label='Ripetizioni previste'>12</td>
-              <td data-label='Carico previsto'>40 Kg</td>
-            </tr>
-            <tr class="grande repeat">
-              <td data-label='Circuito'>1</td>
-              <td data-label='Esercizio'>Lat Machine </td>
-              <td data-label='Ripetizioni previste'>12</td>
-              <td data-label='Carico previsto'>35 Kg</td>
-            </tr>
-            <tr class="grande repeat">
-              <td data-label='Circuito'>1</td>
-              <td data-label='Esercizio'>Leg Press </td>
-              <td data-label='Ripetizioni previste'>12</td>
-              <td data-label='Carico previsto'>90 Kg</td>
-            </tr>
-            <tr class="grande repeat">
-              <td data-label='Circuito'>1</td>
-              <td data-label='Esercizio'>Shoulder Press </td>
-              <td data-label='Ripetizioni previste'>12</td>
-              <td data-label='Carico previsto'>25 Kg</td>
-            </tr>
-            <tr class="grande repeat">
-              <td data-label='Circuito'>1</td>
-              <td data-label='Esercizio'>Vertical Traction </td>
-              <td data-label='Ripetizioni previste'>12</td>
-              <td data-label='Carico previsto'>45 kg</td>
-            </tr>
-            <tr class="repeat">
-              <td data-label='Circuito'>1</td>
-              <td data-label='Esercizio'>Leg Extension </td>
-              <td data-label='Ripetizioni previste'>15 SX / 10 DX</td>
-              <td data-label='Carico previsto'>25 Kg SX / 30 Kg DX</td>
-            </tr>
-            <tr class="repeat">
-              <td data-label='Circuito'>1</td>
-              <td data-label='Esercizio'>Leg Curl </td>
-              <td data-label='Ripetizioni previste'>15 SX / 10 DX</td>
-              <td data-label='Carico previsto'>20 Kg SX / 25 Kg DX</td>
-            </tr>
-            <tr class="grande repeat">
-              <td data-label='Circuito'>1</td>
-              <td data-label='Esercizio'>Pulley </td>
-              <td data-label='Ripetizioni previste'>12</td>
-              <td data-label='Carico previsto'>25 Kg</td>
-            </tr>
-          </tbody>
+      <!-- Circuito III -->
+      <section class="section" data-group="III">
+        <h2 class="section-header">Circuito III</h2>
+        <div class="group">
+          <div class="row" data-repeat="false">
+            <div class="title">Step Up su cubo</div>
+            <div class="meta">10 SX / 10 DX · corpo libero</div>
+          </div>
+          <div class="row" data-repeat="false">
+            <div class="title">Side Plank</div>
+            <div class="meta">30 sec per lato</div>
+          </div>
+          <div class="row repeat" data-repeat="true">
+            <div class="title">Calf Raise</div>
+            <div class="meta">20 SX / 10 DX · corpo libero</div>
+          </div>
+          <div class="row" data-repeat="false">
+            <div class="title">Plank</div>
+            <div class="meta">40 sec</div>
+          </div>
+          <div class="row repeat" data-repeat="true">
+            <div class="title">Pallof Press</div>
+            <div class="meta">15 per lato · elastico</div>
+          </div>
+        </div>
+      </section>
 
-          <!-- Circuito II -->
-          <tbody class="block" data-circuit="II">
-            <tr class="circuit-row"><td colspan="4"><span class="c-title">Circuito II</span></td></tr>
-            <tr>
-              <td data-label='Circuito'>2</td>
-              <td data-label='Esercizio'>Arnold Press manubri</td>
-              <td data-label='Ripetizioni previste'>12</td>
-              <td data-label='Carico previsto'>6 Kg</td>
-            </tr>
-            <tr>
-              <td data-label='Circuito'>2</td>
-              <td data-label='Esercizio'>TRX Row</td>
-              <td data-label='Ripetizioni previste'>10</td>
-              <td data-label='Carico previsto'>Corpo libero</td>
-            </tr>
-            <tr class="grande repeat">
-              <td data-label='Circuito'>2</td>
-              <td data-label='Esercizio'>Affondi camminati </td>
-              <td data-label='Ripetizioni previste'>10 SX / 10 DX</td>
-              <td data-label='Carico previsto'>Corpo libero</td>
-            </tr>
-            <tr>
-              <td data-label='Circuito'>2</td>
-              <td data-label='Esercizio'>Dip su panchette</td>
-              <td data-label='Ripetizioni previste'>10</td>
-              <td data-label='Carico previsto'>Corpo libero</td>
-            </tr>
-            <tr class="repeat">
-              <td data-label='Circuito'>2</td>
-              <td data-label='Esercizio'>Curl bicipiti manubri </td>
-              <td data-label='Ripetizioni previste'>10</td>
-              <td data-label='Carico previsto'>8 Kg</td>
-            </tr>
-            <tr class="grande repeat">
-              <td data-label='Circuito'>2</td>
-              <td data-label='Esercizio'>Hip Thrust </td>
-              <td data-label='Ripetizioni previste'>10</td>
-              <td data-label='Carico previsto'>20 Kg</td>
-            </tr>
-          </tbody>
+      <!-- Cardio (IV) -->
+      <section class="section" data-group="IV">
+        <h2 class="section-header">Cardio</h2>
+        <div class="group">
+          <div class="row" data-repeat="false">
+            <div class="title">Cyclette</div>
+            <div class="meta">30 sec 140–160 bpm ×8</div>
+          </div>
+          <div class="row" data-repeat="false">
+            <div class="title">Cyclette</div>
+            <div class="meta">30 sec 110–120 bpm ×8</div>
+          </div>
+        </div>
+      </section>
 
-          <!-- Circuito III -->
-          <tbody class="block" data-circuit="III">
-            <tr class="circuit-row"><td colspan="4"><span class="c-title">Circuito III</span></td></tr>
-            <tr>
-              <td data-label='Circuito'>3</td>
-              <td data-label='Esercizio'>Step Up su cubo</td>
-              <td data-label='Ripetizioni previste'>10 SX / 10 DX</td>
-              <td data-label='Carico previsto'>Corpo libero</td>
-            </tr>
-            <tr>
-              <td data-label='Circuito'>3</td>
-              <td data-label='Esercizio'>Side Plank</td>
-              <td data-label='Ripetizioni previste'>30 sec per lato</td>
-              <td data-label='Carico previsto'>-</td>
-            </tr>
-            <tr class="repeat">
-              <td data-label='Circuito'>3</td>
-              <td data-label='Esercizio'>Calf Raise </td>
-              <td data-label='Ripetizioni previste'>20 SX / 10 DX</td>
-              <td data-label='Carico previsto'>Corpo libero</td>
-            </tr>
-            <tr>
-              <td data-label='Circuito'>3</td>
-              <td data-label='Esercizio'>Plank</td>
-              <td data-label='Ripetizioni previste'>40 sec</td>
-              <td data-label='Carico previsto'>-</td>
-            </tr>
-            <tr class="repeat">
-              <td data-label='Circuito'>3</td>
-              <td data-label='Esercizio'>Pallof Press </td>
-              <td data-label='Ripetizioni previste'>15 per lato</td>
-              <td data-label='Carico previsto'>Elastico</td>
-            </tr>
-          </tbody>
+      <!-- Stretching (V) -->
+      <section class="section" data-group="V" data-type="stretch">
+        <h2 class="section-header">Stretching</h2>
+        <div class="group">
+          <div class="row" data-repeat="false">
+            <div class="title">Allungamento in piedi</div>
+            <div class="meta">20 sec per gamba</div>
+          </div>
+          <div class="row" data-repeat="false">
+            <div class="title">Allungamento gambe tese</div>
+            <div class="meta">20 sec</div>
+          </div>
+          <div class="row" data-repeat="false">
+            <div class="title">Stretch gluteo a 4</div>
+            <div class="meta">20 sec per lato</div>
+          </div>
+          <div class="row" data-repeat="false">
+            <div class="title">Child's pose</div>
+            <div class="meta">20 sec</div>
+          </div>
+          <div class="row" data-repeat="false">
+            <div class="title">Allungamento con appoggio</div>
+            <div class="meta">20 sec</div>
+          </div>
+          <div class="row" data-repeat="false">
+            <div class="title">Stretch pettorale al muro</div>
+            <div class="meta">20 sec</div>
+          </div>
+          <div class="row" data-repeat="false">
+            <div class="title">Stretch laterale</div>
+            <div class="meta">20 sec per lato</div>
+          </div>
+        </div>
+      </section>
 
-          <!-- Circuito IV -->
-          <tbody class="block" data-circuit="IV">
-            <tr class="circuit-row"><td colspan="4"><span class="c-title">Circuito IV</span></td></tr>
-            <tr>
-              <td data-label='Circuito'>Cardio</td>
-              <td data-label='Esercizio'>Cyclette</td>
-              <td data-label='Ripetizioni previste'>30 sec 140–160 bpm alternato X8</td>
-              <td data-label='Carico previsto'>-</td>
-            </tr>
-            <tr>
-              <td data-label='Circuito'>Cardio</td>
-              <td data-label='Esercizio'>Cyclette</td>
-              <td data-label='Ripetizioni previste'>30 sec 110–120 bpm alternato X8</td>
-              <td data-label='Carico previsto'>-</td>
-            </tr>
-          </tbody>
-
-          <!-- Circuito V (Stretching) -->
-          <tbody class="block" data-circuit="V">
-            <tr class="circuit-row"><td colspan="4"><span class="c-title">Stretching</span></td></tr>
-            <tr>
-              <td data-label='Circuito'>Stretching</td>
-              <td data-label='Esercizio'>Allungamento in piedi</td>
-              <td data-label='Ripetizioni previste'>20 sec per gamba</td>
-              <td data-label='Carico previsto'><img class='stretch-img' src='img/A_step-by-step_instructional_illustration_in_digit.png' alt='Allungamento in piedi'></td>
-            </tr>
-            <tr>
-              <td data-label='Circuito'>Stretching</td>
-              <td data-label='Esercizio'>Allungamento gambe tese</td>
-              <td data-label='Ripetizioni previste'>20 sec</td>
-              <td data-label='Carico previsto'><img class='stretch-img' src='img/A_two-step_instructional_illustration_in_digital_f.png' alt='Allungamento gambe tese'></td>
-            </tr>
-            <tr>
-              <td data-label='Circuito'>Stretching</td>
-              <td data-label='Esercizio'>Stretch gluteo a 4</td>
-              <td data-label='Ripetizioni previste'>20 sec per lato</td>
-              <td data-label='Carico previsto'><img class='stretch-img' src='img/A_three-panel_instructional_illustration_demonstra.png' alt='Stretch gluteo a 4'></td>
-            </tr>
-            <tr>
-              <td data-label='Circuito'>Stretching</td>
-              <td data-label='Esercizio'>Child's pose</td>
-              <td data-label='Ripetizioni previste'>20 sec</td>
-              <td data-label='Carico previsto'><img class='stretch-img' src="img/A_three-panel_instructional_digital_illustration_d.png" alt="Child's pose"></td>
-            </tr>
-            <tr>
-              <td data-label='Circuito'>Stretching</td>
-              <td data-label='Esercizio'>Allungamento con appoggio</td>
-              <td data-label='Ripetizioni previste'>20 sec</td>
-              <td data-label='Carico previsto'><img class='stretch-img' src='img/ChatGPT Image Sep 2, 2025, 10_10_23 PM.png' alt='Allungamento con appoggio'></td>
-            </tr>
-            <tr>
-              <td data-label='Circuito'>Stretching</td>
-              <td data-label='Esercizio'>Stretch pettorale al muro</td>
-              <td data-label='Ripetizioni previste'>20 sec</td>
-              <td data-label='Carico previsto'><img class='stretch-img' src='img/A_three-panel_instructional_illustration_depicts_a.png' alt='Stretch pettorale al muro'></td>
-            </tr>
-            <tr>
-              <td data-label='Circuito'>Stretching</td>
-              <td data-label='Esercizio'>Stretch laterale</td>
-              <td data-label='Ripetizioni previste'>20 sec per lato</td>
-              <td data-label='Carico previsto'><img class='stretch-img' src='img/A_three-panel_digital_illustration_demonstrates_a_.png' alt='Stretch laterale'></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-    <p class='footer'>
-      <a href="https://lbrazzoli.github.io/gym/">Shape Up</a> by
-      <a href="https://creativecommons.org">John Doe</a> is marked
-      <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0</a>
-    </p>
+      <p class="footer">© Shape Up • <a href="https://lbrazzoli.github.io/gym/">lbrazzoli.github.io/gym</a></p>
+    </div>
   </main>
+
+  <script>
+    // Segmented filtering — iOS‑like minimal JS
+    const tabs = {
+      all: document.getElementById('tab-all'),
+      repeat: document.getElementById('tab-repeat'),
+      stretch: document.getElementById('tab-stretch')
+    };
+    const sections = document.querySelectorAll('section.section');
+
+    function setTab(active){
+      for(const b of Object.values(tabs)) b.setAttribute('aria-pressed', String(b === active));
+    }
+
+    tabs.all.addEventListener('click', ()=>{
+      setTab(tabs.all);
+      sections.forEach(s=> s.hidden = false);
+    });
+    tabs.repeat.addEventListener('click', ()=>{
+      setTab(tabs.repeat);
+      sections.forEach(s=>{
+        // show sections that contain at least one .row.repeat
+        const hasRepeat = !!s.querySelector('.row.repeat');
+        s.hidden = !hasRepeat;
+      });
+    });
+    tabs.stretch.addEventListener('click', ()=>{
+      setTab(tabs.stretch);
+      sections.forEach(s=>{
+        s.hidden = !s.matches('[data-type="stretch"]');
+      });
+    });
+  </script>
 </body>
 </html>
