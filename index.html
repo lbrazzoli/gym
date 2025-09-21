@@ -307,7 +307,7 @@
   </main>
 
   <script>
-    // Segmented filtering — iOS‑like minimal JS
+    // ---- Filtri segmentati (fix "Solo ripetizioni") ----
     const tabs = {
       all: document.getElementById('tab-all'),
       repeat: document.getElementById('tab-repeat'),
@@ -316,25 +316,46 @@
     const sections = document.querySelectorAll('section.section');
 
     function setTab(active){
-      for(const b of Object.values(tabs)) b.setAttribute('aria-pressed', String(b === active));
+      Object.values(tabs).forEach(b => b.setAttribute('aria-pressed', String(b === active)));
+    }
+
+    function showAllRowsIn(section, show=true){
+      section.querySelectorAll('.row').forEach(r => r.hidden = !show ? true : false);
+    }
+
+    function updateSectionVisibility(section){
+      // Se tutte le righe della sezione sono nascoste, nascondi la sezione
+      const anyVisibleRow = Array.from(section.querySelectorAll('.row')).some(r => !r.hidden);
+      section.hidden = !anyVisibleRow;
     }
 
     tabs.all.addEventListener('click', ()=>{
       setTab(tabs.all);
-      sections.forEach(s=> s.hidden = false);
+      sections.forEach(s=>{
+        s.hidden = false;
+        showAllRowsIn(s, true); // tutte le righe visibili
+      });
     });
+
     tabs.repeat.addEventListener('click', ()=>{
       setTab(tabs.repeat);
       sections.forEach(s=>{
-        // show sections that contain at least one .row.repeat
-        const hasRepeat = !!s.querySelector('.row.repeat');
-        s.hidden = !hasRepeat;
+        // Mostra solo le righe con classe .repeat
+        s.querySelectorAll('.row').forEach(row=>{
+          row.hidden = !row.classList.contains('repeat');
+        });
+        // Nascondi la sezione se non rimane alcuna riga visibile
+        updateSectionVisibility(s);
       });
     });
+
     tabs.stretch.addEventListener('click', ()=>{
       setTab(tabs.stretch);
       sections.forEach(s=>{
-        s.hidden = !s.matches('[data-type="stretch"]');
+        const isStretch = s.matches('[data-type="stretch"]');
+        s.hidden = !isStretch;
+        // Nella sezione stretch mostra tutte le righe; nelle altre non serve
+        if(isStretch){ showAllRowsIn(s, true); }
       });
     });
   </script>
