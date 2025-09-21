@@ -307,57 +307,77 @@
   </main>
 
   <script>
-    // ---- Filtri segmentati (fix "Solo ripetizioni") ----
-    const tabs = {
-      all: document.getElementById('tab-all'),
-      repeat: document.getElementById('tab-repeat'),
-      stretch: document.getElementById('tab-stretch')
-    };
-    const sections = document.querySelectorAll('section.section');
+  // ---- Filtri segmentati (fix definitivo "Solo ripetizioni") ----
+  const tabs = {
+    all: document.getElementById('tab-all'),
+    repeat: document.getElementById('tab-repeat'),
+    stretch: document.getElementById('tab-stretch')
+  };
+  const sections = Array.from(document.querySelectorAll('section.section'));
 
-    function setTab(active){
-      Object.values(tabs).forEach(b => b.setAttribute('aria-pressed', String(b === active)));
-    }
+  function setTab(active){
+    Object.values(tabs).forEach(b => b.setAttribute('aria-pressed', String(b === active)));
+  }
 
-    function showAllRowsIn(section, show=true){
-      section.querySelectorAll('.row').forEach(r => r.hidden = !show ? true : false);
-    }
-
-    function updateSectionVisibility(section){
-      // Se tutte le righe della sezione sono nascoste, nascondi la sezione
-      const anyVisibleRow = Array.from(section.querySelectorAll('.row')).some(r => !r.hidden);
-      section.hidden = !anyVisibleRow;
-    }
-
-    tabs.all.addEventListener('click', ()=>{
-      setTab(tabs.all);
-      sections.forEach(s=>{
-        s.hidden = false;
-        showAllRowsIn(s, true); // tutte le righe visibili
-      });
+  function resetAll(){
+    // mostra tutte le sezioni e tutte le righe
+    sections.forEach(s => {
+      s.style.display = '';
+      s.querySelectorAll('.row').forEach(r => { r.style.display = ''; });
     });
+  }
 
-    tabs.repeat.addEventListener('click', ()=>{
-      setTab(tabs.repeat);
-      sections.forEach(s=>{
-        // Mostra solo le righe con classe .repeat
-        s.querySelectorAll('.row').forEach(row=>{
-          row.hidden = !row.classList.contains('repeat');
-        });
-        // Nascondi la sezione se non rimane alcuna riga visibile
-        updateSectionVisibility(s);
+  function filterOnlyRepeats(){
+    sections.forEach(s => {
+      // mostra solo le righe con data-repeat="true"
+      let visibleCount = 0;
+      s.querySelectorAll('.row').forEach(r => {
+        const isRepeat = r.getAttribute('data-repeat') === 'true';
+        if (isRepeat){
+          r.style.display = '';
+          visibleCount++;
+        } else {
+          r.style.display = 'none';
+        }
       });
+      // nascondi la sezione se non c'è nessuna riga visibile
+      s.style.display = visibleCount > 0 ? '' : 'none';
     });
+  }
 
-    tabs.stretch.addEventListener('click', ()=>{
-      setTab(tabs.stretch);
-      sections.forEach(s=>{
-        const isStretch = s.matches('[data-type="stretch"]');
-        s.hidden = !isStretch;
-        // Nella sezione stretch mostra tutte le righe; nelle altre non serve
-        if(isStretch){ showAllRowsIn(s, true); }
-      });
+  function filterOnlyStretch(){
+    sections.forEach(s => {
+      const isStretch = s.matches('[data-type="stretch"]');
+      s.style.display = isStretch ? '' : 'none';
+      if (isStretch){
+        // nello stretching mostra tutte le righe
+        s.querySelectorAll('.row').forEach(r => { r.style.display = ''; });
+      }
     });
-  </script>
+  }
+
+  // Event listeners
+  tabs.all.addEventListener('click', () => {
+    setTab(tabs.all);
+    resetAll();
+  });
+
+  tabs.repeat.addEventListener('click', () => {
+    setTab(tabs.repeat);
+    // prima reset, poi filtra (evita residui da filtri precedenti)
+    resetAll();
+    filterOnlyRepeats();
+  });
+
+  tabs.stretch.addEventListener('click', () => {
+    setTab(tabs.stretch);
+    // reset per sicurezza, poi mostra solo stretching
+    resetAll();
+    filterOnlyStretch();
+  });
+
+  // opzionale: se vuoi che all’avvio sia tutto visibile, non fare altro.
+  // se vuoi che parta già filtrato, chiama qui filterOnlyRepeats() o filterOnlyStretch()
+</script>
 </body>
 </html>
